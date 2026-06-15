@@ -1,7 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 @import "./theme.css";
 
 * {
@@ -584,7 +582,7 @@ summary {
 .bottom-nav .create-tab.active .create-icon-shell {
     background: var(--tt-accent);
     color: var(--tt-text);
-1}
+}
 
 .bottom-nav .create-tab.active .bottom-nav-icon {
     color: var(--tt-text);
