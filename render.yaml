@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: tikitoki
+    env: php
+    plan: free
+    buildCommand: composer install --prefer-dist --no-dev --optimize-autoloader && npm install && npm run build
+    startCommand: php -S 0.0.0.0:$PORT -t public public/index.php
