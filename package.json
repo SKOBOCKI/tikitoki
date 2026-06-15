@@ -3,6 +3,7 @@
     "private": true,
     "type": "module",
     "scripts": {
+        "prebuild": "bash ./scripts/render-build.sh",
         "build": "vite build",
         "dev": "vite"
     },
