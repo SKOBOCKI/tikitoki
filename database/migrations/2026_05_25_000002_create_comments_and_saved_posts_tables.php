@@ -8,22 +8,26 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('comments', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('post_id')->constrained()->cascadeOnDelete();
-            $table->text('body');
-            $table->timestamps();
-        });
+        if (! Schema::hasTable('comments')) {
+            Schema::create('comments', function (Blueprint $table) {
+                $table->id();
+                $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+                $table->foreignId('post_id')->constrained()->cascadeOnDelete();
+                $table->text('body');
+                $table->timestamps();
+            });
+        }
 
-        Schema::create('saved_posts', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('post_id')->constrained()->cascadeOnDelete();
-            $table->timestamps();
+        if (! Schema::hasTable('saved_posts')) {
+            Schema::create('saved_posts', function (Blueprint $table) {
+                $table->id();
+                $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+                $table->foreignId('post_id')->constrained()->cascadeOnDelete();
+                $table->timestamps();
 
-            $table->unique(['user_id', 'post_id']);
-        });
+                $table->unique(['user_id', 'post_id']);
+            });
+        }
     }
 
     public function down(): void
