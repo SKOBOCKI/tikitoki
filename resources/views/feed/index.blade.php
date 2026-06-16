@@ -60,6 +60,7 @@
                                 </div>
                                 <div class="shorts-timeline" data-timeline aria-label="Video timeline">
                                     <div class="shorts-progress" data-progress></div>
+                                    <input class="shorts-seek" type="range" data-seek min="0" max="0" step="0.01" value="0" aria-label="Seek video">
                                 </div>
                             @else
                                 <img class="feed-media" src="{{ $post->media_url }}" alt="{{ $post->caption }}">

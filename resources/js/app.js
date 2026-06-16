@@ -113,6 +113,7 @@ document.addEventListener("DOMContentLoaded", function () {
     document.querySelectorAll(".feed-card").forEach((card) => {
         const video = card.querySelector("video.feed-media");
         const progress = card.querySelector("[data-progress]");
+        const seek = card.querySelector("[data-seek]");
         const toggle = card.querySelector(".media-toggle");
         const volumeButton = card.querySelector("[data-volume-button]");
         const volumeSlider = card.querySelector("[data-volume-slider]");
@@ -125,12 +126,36 @@ document.addEventListener("DOMContentLoaded", function () {
             card.classList.toggle("is-paused", video.paused);
         };
 
-        const updateProgress = () => {
-            if (!progress || !video.duration) {
+        const hasVideoDuration = () => Number.isFinite(video.duration) && video.duration > 0;
+
+        const setProgressValue = (time) => {
+            if (!progress || !hasVideoDuration()) {
                 return;
             }
 
-            progress.style.width = `${(video.currentTime / video.duration) * 100}%`;
+            const percent = Math.min(100, Math.max(0, (time / video.duration) * 100));
+            progress.style.width = `${percent}%`;
+        };
+
+        const syncSeekBounds = () => {
+            if (!seek) {
+                return;
+            }
+
+            seek.max = hasVideoDuration() ? String(video.duration) : "0";
+            seek.disabled = !hasVideoDuration();
+        };
+
+        const updateProgress = () => {
+            if (!hasVideoDuration()) {
+                return;
+            }
+
+            setProgressValue(video.currentTime);
+
+            if (seek) {
+                seek.value = String(video.currentTime);
+            }
         };
 
         const updateVolume = () => {
@@ -159,7 +184,20 @@ document.addEventListener("DOMContentLoaded", function () {
         video.addEventListener("play", setPausedState);
         video.addEventListener("pause", setPausedState);
         video.addEventListener("timeupdate", updateProgress);
-        video.addEventListener("loadedmetadata", updateProgress);
+        video.addEventListener("loadedmetadata", () => {
+            syncSeekBounds();
+            updateProgress();
+        });
+
+        seek?.addEventListener("input", () => {
+            if (!hasVideoDuration()) {
+                return;
+            }
+
+            const nextTime = Math.min(video.duration, Math.max(0, Number(seek.value)));
+            video.currentTime = nextTime;
+            setProgressValue(nextTime);
+        });
 
         volumeButton?.addEventListener("click", () => {
             video.muted = !video.muted;
@@ -179,6 +217,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
 
         setPausedState();
+        syncSeekBounds();
         updateVolume();
     });
 

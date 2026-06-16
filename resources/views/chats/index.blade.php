@@ -1,5 +1,5 @@
 <x-layouts.app title="Chats | TikiToki">
-    <section class="chat-page" data-chat-app data-current-user="{{ auth()->id() }}">
+    <section class="chat-page @if($selectedChat) selected-chat @endif" data-chat-app data-current-user="{{ auth()->id() }}">
         <nav class="profile-nav" aria-label="Chat navigation">
             <a href="{{ route('feed.fyp') }}" class="brand-link">TikiToki</a>
             <div>
@@ -86,9 +86,14 @@
             <main class="chat-window">
                 @if ($selectedChat)
                     <header class="chat-window-header">
-                        <div>
-                            <p>{{ $selectedChat->is_group ? 'Group chat' : 'Direct chat' }}</p>
-                            <h2>{{ $selectedChat->displayNameFor(auth()->user()) }}</h2>
+                        <div class="chat-window-title">
+                            <a class="chat-back-link" href="{{ route('chats.index') }}" aria-label="Back to chats">
+                                <span aria-hidden="true">&#8249;</span>
+                            </a>
+                            <div>
+                                <p>{{ $selectedChat->is_group ? 'Group chat' : 'Direct chat' }}</p>
+                                <h2>{{ $selectedChat->displayNameFor(auth()->user()) }}</h2>
+                            </div>
                         </div>
                         <span>{{ $selectedChat->participants->count() }} members</span>
                     </header>
