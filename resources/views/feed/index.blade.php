@@ -42,12 +42,18 @@
                     $isOwner = auth()->check() && auth()->user()->is($post->user);
                     $postUrl = route('posts.show', $post);
                     $avatar = $post->user->avatar_url ?? 'https://api.dicebear.com/8.x/initials/svg?seed='.urlencode($post->user->name);
+                    $mediaAvailable = $post->media_available;
                 @endphp
 
                 <article class="feed-card" id="post-{{ $post->id }}">
                     <div class="media-stage">
                         <div class="media-frame">
-                            @if ($post->media_type === 'video')
+                            @if (! $mediaAvailable)
+                                <div class="feed-media media-unavailable">
+                                    <span class="media-unavailable-mark" aria-hidden="true">!</span>
+                                    <strong>Media unavailable</strong>
+                                </div>
+                            @elseif ($post->media_type === 'video')
                                 <video class="feed-media" src="{{ $post->media_source }}" controls autoplay loop muted playsinline preload="metadata" controlsList="nodownload nofullscreen noplaybackrate" disablepictureinpicture></video>
                                 <button class="media-toggle" type="button" aria-label="Play or pause video">
                                     <span aria-hidden="true">&#9654;</span>

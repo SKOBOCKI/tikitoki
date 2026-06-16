@@ -62,16 +62,22 @@
                     @forelse ($posts as $post)
                         @php
                             $avatar = $post->user->avatar_url ?? 'https://api.dicebear.com/8.x/initials/svg?seed='.urlencode($post->user->name);
+                            $mediaAvailable = $post->media_available;
                         @endphp
 
                         <a class="search-card" href="{{ route('posts.show', $post) }}">
                             <div class="search-card-media">
-                                @if ($post->media_type === 'video')
+                                @if (! $mediaAvailable)
+                                    <div class="media-unavailable">
+                                        <span class="media-unavailable-mark" aria-hidden="true">!</span>
+                                        <strong>Media unavailable</strong>
+                                    </div>
+                                @elseif ($post->media_type === 'video')
                                     <video src="{{ $post->media_source }}" muted playsinline preload="metadata"></video>
                                 @else
                                     <img src="{{ $post->media_source }}" alt="{{ $post->caption }}">
                                 @endif
-                                <span>{{ ucfirst($post->media_type) }}</span>
+                                <span>{{ $mediaAvailable ? ucfirst($post->media_type) : 'Unavailable' }}</span>
                             </div>
 
                             <div class="search-card-body">

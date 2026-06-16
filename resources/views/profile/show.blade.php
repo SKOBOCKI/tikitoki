@@ -59,14 +59,23 @@
 
                 <div class="creator-video-grid">
                     @forelse ($likedPosts as $post)
+                        @php
+                            $mediaAvailable = $post->media_available;
+                        @endphp
+
                         <a class="creator-video-card" href="{{ route('posts.show', $post) }}">
                             <div class="creator-video-media">
-                                @if ($post->media_type === 'video')
+                                @if (! $mediaAvailable)
+                                    <div class="media-unavailable">
+                                        <span class="media-unavailable-mark" aria-hidden="true">!</span>
+                                        <strong>Media unavailable</strong>
+                                    </div>
+                                @elseif ($post->media_type === 'video')
                                     <video src="{{ $post->media_source }}" muted playsinline preload="metadata"></video>
                                 @else
                                     <img src="{{ $post->media_source }}" alt="{{ $post->caption }}">
                                 @endif
-                                <span>{{ ucfirst($post->media_type) }}</span>
+                                <span>{{ $mediaAvailable ? ucfirst($post->media_type) : 'Unavailable' }}</span>
                             </div>
 
                             <div class="creator-video-body">
