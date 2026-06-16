@@ -4,11 +4,22 @@ document.addEventListener("DOMContentLoaded", function () {
     const commentCloses = document.querySelectorAll(".comments-close");
     const createDrawer = document.getElementById("create-post");
 
-    const closeComments = () => {
+    const closeComments = (instant = false) => {
         document.querySelectorAll(".comments-panel.is-open").forEach((panel) => {
+            if (instant) {
+                panel.style.transition = "none";
+            }
+
             panel.classList.remove("is-open");
             panel.setAttribute("aria-hidden", "true");
             panel.closest(".feed-card")?.classList.remove("has-open-comments");
+
+            if (instant) {
+                panel.offsetHeight;
+                window.requestAnimationFrame(() => {
+                    panel.style.transition = "";
+                });
+            }
         });
 
         commentToggles.forEach((button) => {
@@ -97,7 +108,7 @@ document.addEventListener("DOMContentLoaded", function () {
     feedStack?.addEventListener("scroll", function (event) {
         // Doar daca nu scrollam pe container-ul comentariilor
         if (event.target === feedStack) {
-            closeComments();
+            closeComments(true);
         }
     });
 
@@ -287,24 +298,33 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     if (feedStack && "IntersectionObserver" in window) {
+        let activeFeedCard = null;
+
         const observer = new IntersectionObserver(
             (entries) => {
                 entries.forEach((entry) => {
                     const card = entry.target;
                     const video = card.querySelector("video.feed-media");
 
-                    if (!video) {
-                        return;
-                    }
-
                     if (entry.isIntersecting && entry.intersectionRatio > 0.65) {
+                        if (activeFeedCard && activeFeedCard !== card) {
+                            closeComments(true);
+                        }
+                        activeFeedCard = card;
                         card.classList.add("is-visible");
-                        video.play().catch(() => {
-                            card.classList.add("is-paused");
-                        });
+                        if (video) {
+                            video.play().catch(() => {
+                                card.classList.add("is-paused");
+                            });
+                        }
                     } else {
                         card.classList.remove("is-visible");
-                        video.pause();
+                        if (card.classList.contains("has-open-comments")) {
+                            closeComments(true);
+                        }
+                        if (video) {
+                            video.pause();
+                        }
                     }
                 });
             },
