@@ -23,7 +23,7 @@ class ChatController extends Controller
             ->orderByDesc('chats.updated_at')
             ->get();
 
-        $selectedChat = $chat ?: $chats->first();
+        $selectedChat = $chat;
 
         if ($selectedChat) {
             $this->ensureParticipant($request, $selectedChat);

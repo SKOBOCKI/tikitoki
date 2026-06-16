@@ -47,37 +47,77 @@
                 </div>
 
                 <div class="chat-create" id="new-chat">
-                    <details open>
-                        <summary>Direct chat</summary>
-                        <form method="POST" action="{{ route('chats.store') }}">
+                    <div class="chat-create-heading">
+                        <span>Start</span>
+                        <strong>New conversation</strong>
+                    </div>
+
+                    <details class="chat-create-card" open>
+                        <summary>
+                            <span class="chat-create-icon" aria-hidden="true">
+                                <span class="app-icon icon-user"></span>
+                            </span>
+                            <span class="chat-create-copy">
+                                <strong>Direct chat</strong>
+                                <small>Open a private conversation</small>
+                            </span>
+                        </summary>
+                        <form method="POST" action="{{ route('chats.store') }}" class="chat-create-form">
                             @csrf
                             <input type="hidden" name="type" value="direct">
-                            <select name="user_ids[]" required>
-                                <option value="">Choose a person</option>
-                                @foreach ($users as $user)
-                                    <option value="{{ $user->id }}">{{ $user->name }} {{ '@'.$user->username }}</option>
-                                @endforeach
-                            </select>
-                            <button type="submit">Open chat</button>
+                            <label class="chat-field">
+                                <span>Person</span>
+                                <select name="user_ids[]" required>
+                                    <option value="">Choose a person</option>
+                                    @foreach ($users as $user)
+                                        <option value="{{ $user->id }}">{{ $user->name }} {{ '@'.$user->username }}</option>
+                                    @endforeach
+                                </select>
+                            </label>
+                            <button type="submit">
+                                <span class="app-icon icon-mail" aria-hidden="true"></span>
+                                Open chat
+                            </button>
                         </form>
                     </details>
 
-                    <details>
-                        <summary>Group chat</summary>
-                        <form method="POST" action="{{ route('chats.store') }}">
+                    <details class="chat-create-card">
+                        <summary>
+                            <span class="chat-create-icon" aria-hidden="true">
+                                <span class="app-icon icon-plus"></span>
+                            </span>
+                            <span class="chat-create-copy">
+                                <strong>Group chat</strong>
+                                <small>Build a room with multiple people</small>
+                            </span>
+                        </summary>
+                        <form method="POST" action="{{ route('chats.store') }}" class="chat-create-form">
                             @csrf
                             <input type="hidden" name="type" value="group">
-                            <input type="text" name="title" placeholder="Group name" maxlength="80">
+                            <label class="chat-field">
+                                <span>Group name</span>
+                                <input type="text" name="title" placeholder="Weekend edits" maxlength="80">
+                            </label>
+                            <div class="chat-picker-head">
+                                <span>Members</span>
+                                <small>Choose at least two</small>
+                            </div>
                             <div class="chat-user-picker">
                                 @foreach ($users as $user)
-                                    <label>
+                                    <label class="chat-user-option">
                                         <input type="checkbox" name="user_ids[]" value="{{ $user->id }}">
-                                        <span>{{ $user->name }}</span>
-                                        <small>{{ '@'.$user->username }}</small>
+                                        <span class="chat-option-avatar" aria-hidden="true">{{ Str::substr($user->name, 0, 2) }}</span>
+                                        <span class="chat-option-copy">
+                                            <strong>{{ $user->name }}</strong>
+                                            <small>{{ '@'.$user->username }}</small>
+                                        </span>
                                     </label>
                                 @endforeach
                             </div>
-                            <button type="submit">Create group</button>
+                            <button type="submit">
+                                <span class="app-icon icon-plus" aria-hidden="true"></span>
+                                Create group
+                            </button>
                         </form>
                     </details>
                 </div>
@@ -87,7 +127,7 @@
                 @if ($selectedChat)
                     <header class="chat-window-header">
                         <div class="chat-window-title">
-                            <a class="chat-back-link" href="{{ route('chats.index') }}" aria-label="Back to chats" onclick="window.location.href='{{ route('chats.index') }}'">
+                            <a class="chat-back-link" href="{{ route('chats.index') }}" aria-label="Back to chats">
                                 <span aria-hidden="true">&#8249;</span>
                             </a>
                             <div>
