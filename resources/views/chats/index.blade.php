@@ -87,7 +87,7 @@
                 @if ($selectedChat)
                     <header class="chat-window-header">
                         <div class="chat-window-title">
-                            <a class="chat-back-link" href="{{ route('chats.index') }}" aria-label="Back to chats">
+                            <a class="chat-back-link" href="{{ route('chats.index') }}" aria-label="Back to chats" onclick="window.location.href='{{ route('chats.index') }}'">
                                 <span aria-hidden="true">&#8249;</span>
                             </a>
                             <div>

@@ -2460,8 +2460,10 @@ summary {
 }
 
 .chat-window-header {
+    position: relative;
     padding: 1rem;
     border-bottom: 1px solid var(--tt-line);
+    z-index: 1;
 }
 
 .chat-window-title {
@@ -2487,8 +2489,10 @@ summary {
 }
 
 .chat-back-link {
-    width: 2.35rem;
-    height: 2.35rem;
+    width: 2.9rem;
+    height: 2.9rem;
+    min-width: 2.9rem;
+    min-height: 2.9rem;
     flex: 0 0 auto;
     display: none;
     place-items: center;
@@ -2497,13 +2501,19 @@ summary {
     background: var(--tt-surface-soft);
     color: var(--tt-text);
     line-height: 1;
+    text-decoration: none;
+    cursor: pointer;
+    padding: 0.35rem;
+    pointer-events: auto;
+    touch-action: manipulation;
+    z-index: 2;
 }
 
 .chat-back-link span {
     color: inherit;
-    font-size: 1.8rem;
+    font-size: 1.7rem;
     transform: translateY(-1px);
-}
+    display: inline-block;
 
 .chat-messages {
     flex: 1;
