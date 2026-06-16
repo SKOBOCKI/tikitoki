@@ -2840,36 +2840,15 @@ summary {
 
 @media (min-width: 760px) {
     .feed-stack {
-        gap: 1rem;
-        padding-top: calc(var(--topbar-height) + 0.85rem);
-        padding-bottom: calc(var(--nav-height) + 1rem);
-        scroll-padding-top: calc(var(--topbar-height) + 0.85rem);
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
     }
 
     .feed-card {
-        width: min(24rem, calc(100vw - 2rem));
-        height: min(42rem, calc(100dvh - var(--topbar-height) - var(--nav-height) - 2rem));
-        min-height: min(30rem, calc(100dvh - var(--topbar-height) - var(--nav-height) - 2rem));
-        flex-basis: min(42rem, calc(100dvh - var(--topbar-height) - var(--nav-height) - 2rem));
+        height: calc(100dvh - 1rem);
+        flex-basis: calc(100dvh - 1rem);
         border-radius: var(--radius);
-        scroll-snap-align: start;
-    }
-
-    .shorts-volume {
-        top: 0.85rem;
-    }
-
-    .shorts-timeline {
-        bottom: 0;
-    }
-
-    .action-rail {
-        bottom: 4.8rem;
-    }
-
-    .post-info,
-    .media-error {
-        bottom: 1rem;
+        scroll-snap-align: center;
     }
 }
 

@@ -37,8 +37,8 @@
 
                 <label class="file-upload-field">
                     <span>Video from your PC</span>
-                    <input data-upload-input type="file" name="media_file" accept="video/mp4,video/webm,video/ogg,.mp4,.m4v,.webm,.ogv,.ogg">
-                    <small data-upload-name>MP4, WebM or OGG up to 100 MB.</small>
+                    <input data-upload-input type="file" name="media_file" accept="video/mp4,video/quicktime,video/webm,video/ogg,.mp4,.m4v,.mov,.qt,.webm,.ogv,.ogg">
+                    <small data-upload-name>MP4, MOV, WebM or OGG up to 100 MB.</small>
                 </label>
 
                 <label>

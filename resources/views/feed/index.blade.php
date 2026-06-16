@@ -62,7 +62,7 @@
                                     <div class="shorts-progress" data-progress></div>
                                     <input class="shorts-seek" type="range" data-seek min="0" max="0" step="0.01" value="0" aria-label="Seek video">
                                 </div>
-                                <p class="media-error" data-media-error hidden>Video cannot be played. Upload MP4, WebM or OGG.</p>
+                                <p class="media-error" data-media-error hidden>Video cannot be played by this browser.</p>
                             @else
                                 <img class="feed-media" src="{{ $post->media_url }}" alt="{{ $post->caption }}">
                             @endif

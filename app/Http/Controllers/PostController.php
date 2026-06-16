@@ -37,7 +37,7 @@ class PostController extends Controller
             'media_file' => [
                 'nullable',
                 'file',
-                'mimes:mp4,m4v,webm,ogv,ogg',
+                'mimes:mp4,m4v,mov,qt,webm,ogv,ogg',
                 'max:102400',
             ],
             'song_title' => ['nullable', 'string', 'max:120'],

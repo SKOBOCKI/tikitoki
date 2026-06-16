@@ -135,7 +135,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     emptyPreview.hidden = false;
                 }
                 if (uploadName) {
-                    uploadName.textContent = "MP4, WebM or OGG up to 100 MB.";
+                    uploadName.textContent = "MP4, MOV, WebM or OGG up to 100 MB.";
                 }
                 return;
             }
