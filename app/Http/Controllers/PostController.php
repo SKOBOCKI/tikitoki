@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Post;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class PostController extends Controller
 {
@@ -47,7 +49,7 @@ class PostController extends Controller
             $path = $request->file('media_file')->store('posts', 'public');
 
             $data['media_type'] = 'video';
-            $data['media_url'] = '/storage/'.$path;
+            $data['media_url'] = route('media.show', ['path' => $path], false);
         }
 
         unset($data['media_file']);
@@ -55,6 +57,30 @@ class PostController extends Controller
         $request->user()->posts()->create($data);
 
         return redirect()->route('feed.fyp')->with('status', 'Posted to the feed.');
+    }
+
+    public function media(string $path): BinaryFileResponse
+    {
+        abort_if(str_contains($path, '..') || str_contains($path, '\\'), 404);
+
+        $disk = Storage::disk('public');
+
+        abort_unless($disk->exists($path), 404);
+
+        $extension = strtolower(pathinfo($path, PATHINFO_EXTENSION));
+        $contentType = match ($extension) {
+            'mov', 'qt' => 'video/quicktime',
+            'mp4', 'm4v' => 'video/mp4',
+            'webm' => 'video/webm',
+            'ogg', 'ogv' => 'video/ogg',
+            default => $disk->mimeType($path) ?: 'application/octet-stream',
+        };
+
+        return response()->file($disk->path($path), [
+            'Accept-Ranges' => 'bytes',
+            'Cache-Control' => 'public, max-age=31536000',
+            'Content-Type' => $contentType,
+        ]);
     }
 
     public function like(Request $request, Post $post): RedirectResponse

@@ -14,6 +14,9 @@ Route::get('/fyp', [FeedController::class, 'fyp'])->name('feed.fyp');
 Route::get('/search', [FeedController::class, 'search'])->name('feed.search');
 Route::get('/following', [FeedController::class, 'following'])->middleware('auth')->name('feed.following');
 Route::get('/posts/{post}', [PostController::class, 'show'])->name('posts.show');
+Route::get('/media/{path}', [PostController::class, 'media'])
+    ->where('path', '.*')
+    ->name('media.show');
 
 Route::middleware('guest')->group(function () {
     Route::get('/register', [AuthController::class, 'showRegister'])->name('register');

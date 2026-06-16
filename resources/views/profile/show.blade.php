@@ -62,9 +62,9 @@
                         <a class="creator-video-card" href="{{ route('posts.show', $post) }}">
                             <div class="creator-video-media">
                                 @if ($post->media_type === 'video')
-                                    <video src="{{ $post->media_url }}" muted playsinline preload="metadata"></video>
+                                    <video src="{{ $post->media_source }}" muted playsinline preload="metadata"></video>
                                 @else
-                                    <img src="{{ $post->media_url }}" alt="{{ $post->caption }}">
+                                    <img src="{{ $post->media_source }}" alt="{{ $post->caption }}">
                                 @endif
                                 <span>{{ ucfirst($post->media_type) }}</span>
                             </div>
