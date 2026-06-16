@@ -27,7 +27,7 @@ class AuthController extends Controller
 
         $user = User::create($data);
 
-        Auth::login($user);
+        Auth::login($user, true);
 
         return redirect()->route('feed.fyp')->with('status', 'Account created. Welcome to TikiToki.');
     }
@@ -44,7 +44,7 @@ class AuthController extends Controller
             'password' => ['required', 'string'],
         ]);
 
-        if (! Auth::attempt($credentials, $request->boolean('remember'))) {
+        if (! Auth::attempt($credentials, $request->boolean('remember', true))) {
             return back()
                 ->withErrors(['email' => 'These login details do not match our records.'])
                 ->onlyInput('email');

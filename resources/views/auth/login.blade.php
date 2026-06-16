@@ -24,8 +24,9 @@
             </label>
 
             <label class="checkbox-row">
-                <input type="checkbox" name="remember" value="1">
-                Remember me
+                <input type="hidden" name="remember" value="0">
+                <input type="checkbox" name="remember" value="1" @checked(old('remember', '1'))>
+                Keep me logged in
             </label>
 
             <button type="submit" class="primary-button">Log in</button>
