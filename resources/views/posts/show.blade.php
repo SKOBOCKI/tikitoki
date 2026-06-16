@@ -1,7 +1,6 @@
 <x-layouts.app title="Clip | TikiToki">
     @php
         $postUrl = route('posts.show', $post);
-        $mediaAvailable = $post->media_available;
     @endphp
 
     <section class="watch-page">
@@ -23,12 +22,7 @@
 
         <article class="watch-layout">
             <div class="watch-media">
-                @if (! $mediaAvailable)
-                    <div class="media-unavailable">
-                        <span class="media-unavailable-mark" aria-hidden="true">!</span>
-                        <strong>Media unavailable</strong>
-                    </div>
-                @elseif ($post->media_type === 'video')
+                @if ($post->media_type === 'video')
                     <video src="{{ $post->media_source }}" controls autoplay playsinline></video>
                 @else
                     <img src="{{ $post->media_source }}" alt="{{ $post->caption }}">

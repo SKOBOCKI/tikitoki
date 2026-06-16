@@ -49,7 +49,7 @@ class PostController extends Controller
             $path = $request->file('media_file')->store('posts', 'public');
 
             $data['media_type'] = 'video';
-            $data['media_url'] = '/media/'.$path;
+            $data['media_url'] = '/storage/'.$path;
         }
 
         unset($data['media_file']);

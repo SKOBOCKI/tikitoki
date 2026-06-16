@@ -658,44 +658,6 @@ summary {
     background: #000;
 }
 
-.media-unavailable {
-    width: 100%;
-    min-height: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 0.6rem;
-    padding: 1rem;
-    background:
-        radial-gradient(circle at 50% 28%, rgb(255 45 85 / 0.18), transparent 34%),
-        linear-gradient(145deg, #161616, #050505 72%);
-    color: var(--tt-text);
-    text-align: center;
-}
-
-.media-unavailable-mark {
-    width: 2.45rem;
-    height: 2.45rem;
-    display: grid;
-    place-items: center;
-    border: 1px solid rgb(255 255 255 / 0.18);
-    border-radius: 50%;
-    background: rgb(255 45 85 / 0.16);
-    color: var(--tt-accent);
-    font-size: 1.2rem;
-    font-weight: 900;
-    line-height: 1;
-}
-
-.media-unavailable strong {
-    max-width: 12rem;
-    color: rgb(255 255 255 / 0.84);
-    font-size: 0.82rem;
-    font-weight: 850;
-    line-height: 1.25;
-}
-
 .media-toggle {
     position: absolute;
     top: 50%;
@@ -1518,10 +1480,6 @@ summary {
     transition: transform var(--transition);
 }
 
-.search-card-media .media-unavailable {
-    aspect-ratio: 9 / 13.5;
-}
-
 .search-card:hover video,
 .search-card:hover img {
     transform: scale(1.025);
@@ -1902,10 +1860,6 @@ summary {
     object-fit: cover;
     background: #000;
     transition: transform var(--transition);
-}
-
-.creator-video-media .media-unavailable {
-    aspect-ratio: 9 / 14;
 }
 
 .creator-video-card:hover .creator-video-media video,
@@ -2328,10 +2282,6 @@ summary {
     max-height: 82dvh;
     object-fit: contain;
     background: #000;
-}
-
-.watch-media .media-unavailable {
-    min-height: min(76dvh, 46rem);
 }
 
 .watch-details {
