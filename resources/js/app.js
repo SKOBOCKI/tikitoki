@@ -172,6 +172,8 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
+    const feedPlayers = new Map();
+
     document.querySelectorAll(".feed-card").forEach((card) => {
         const video = card.querySelector("video.feed-media");
         const progress = card.querySelector("[data-progress]");
@@ -233,9 +235,40 @@ document.addEventListener("DOMContentLoaded", function () {
             );
         };
 
+        const useCustomControls = () => {
+            if (toggle || progress || seek || volumeButton || volumeSlider) {
+                video.controls = false;
+                card.classList.remove("uses-native-controls");
+            }
+        };
+
+        const useNativeControls = () => {
+            video.controls = true;
+            card.classList.add("uses-native-controls");
+        };
+
+        const playVideo = async () => {
+            video.setAttribute("playsinline", "");
+            card.classList.remove("has-media-error");
+
+            if (mediaError) {
+                mediaError.hidden = true;
+            }
+
+            try {
+                await video.play();
+                setPausedState();
+                return true;
+            } catch {
+                setPausedState();
+                useNativeControls();
+                return false;
+            }
+        };
+
         toggle?.addEventListener("click", async () => {
             if (video.paused) {
-                await video.play().catch(() => {});
+                await playVideo();
             } else {
                 video.pause();
             }
@@ -243,7 +276,11 @@ document.addEventListener("DOMContentLoaded", function () {
             setPausedState();
         });
 
-        video.addEventListener("click", () => toggle?.click());
+        video.addEventListener("click", () => {
+            if (!video.controls) {
+                toggle?.click();
+            }
+        });
         video.addEventListener("play", setPausedState);
         video.addEventListener("pause", setPausedState);
         video.addEventListener("timeupdate", updateProgress);
@@ -257,6 +294,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
         video.addEventListener("error", () => {
             card.classList.add("has-media-error", "is-paused");
+            useNativeControls();
             if (mediaError) {
                 mediaError.hidden = false;
             }
@@ -292,9 +330,14 @@ document.addEventListener("DOMContentLoaded", function () {
             updateVolume();
         });
 
+        useCustomControls();
         setPausedState();
         syncSeekBounds();
         updateVolume();
+        feedPlayers.set(card, {
+            play: playVideo,
+            pause: () => video.pause(),
+        });
     });
 
     if (feedStack && "IntersectionObserver" in window) {
@@ -304,7 +347,6 @@ document.addEventListener("DOMContentLoaded", function () {
             (entries) => {
                 entries.forEach((entry) => {
                     const card = entry.target;
-                    const video = card.querySelector("video.feed-media");
 
                     if (entry.isIntersecting && entry.intersectionRatio > 0.65) {
                         if (activeFeedCard && activeFeedCard !== card) {
@@ -312,19 +354,13 @@ document.addEventListener("DOMContentLoaded", function () {
                         }
                         activeFeedCard = card;
                         card.classList.add("is-visible");
-                        if (video) {
-                            video.play().catch(() => {
-                                card.classList.add("is-paused");
-                            });
-                        }
+                        feedPlayers.get(card)?.play();
                     } else {
                         card.classList.remove("is-visible");
                         if (card.classList.contains("has-open-comments")) {
                             closeComments(true);
                         }
-                        if (video) {
-                            video.pause();
-                        }
+                        feedPlayers.get(card)?.pause();
                     }
                 });
             },
@@ -335,6 +371,9 @@ document.addEventListener("DOMContentLoaded", function () {
         );
 
         document.querySelectorAll(".feed-card").forEach((card) => observer.observe(card));
+    } else {
+        const firstFeedCard = document.querySelector(".feed-card");
+        feedPlayers.get(firstFeedCard)?.play();
     }
 
     document.querySelectorAll(".round-action, .watch-action").forEach((button) => {
