@@ -135,7 +135,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     emptyPreview.hidden = false;
                 }
                 if (uploadName) {
-                    uploadName.textContent = "MP4, MOV, WebM or OGG up to 100 MB.";
+                    uploadName.textContent = "MP4, WebM or OGG up to 100 MB.";
                 }
                 return;
             }
@@ -165,6 +165,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const video = card.querySelector("video.feed-media");
         const progress = card.querySelector("[data-progress]");
         const seek = card.querySelector("[data-seek]");
+        const mediaError = card.querySelector("[data-media-error]");
         const toggle = card.querySelector(".media-toggle");
         const volumeButton = card.querySelector("[data-volume-button]");
         const volumeSlider = card.querySelector("[data-volume-slider]");
@@ -236,8 +237,21 @@ document.addEventListener("DOMContentLoaded", function () {
         video.addEventListener("pause", setPausedState);
         video.addEventListener("timeupdate", updateProgress);
         video.addEventListener("loadedmetadata", () => {
+            card.classList.remove("has-media-error");
+            if (mediaError) {
+                mediaError.hidden = true;
+            }
             syncSeekBounds();
             updateProgress();
+        });
+        video.addEventListener("error", () => {
+            card.classList.add("has-media-error", "is-paused");
+            if (mediaError) {
+                mediaError.hidden = false;
+            }
+            if (seek) {
+                seek.disabled = true;
+            }
         });
 
         seek?.addEventListener("input", () => {
