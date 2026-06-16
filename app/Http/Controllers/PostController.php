@@ -33,9 +33,24 @@ class PostController extends Controller
         $data = $request->validate([
             'caption' => ['required', 'string', 'max:500'],
             'media_type' => ['required', Rule::in(['video', 'photo'])],
-            'media_url' => ['required', 'url', 'max:1000'],
+            'media_url' => ['nullable', 'required_without:media_file', 'url', 'max:1000'],
+            'media_file' => [
+                'nullable',
+                'file',
+                'mimetypes:video/mp4,video/quicktime,video/webm,video/ogg',
+                'max:102400',
+            ],
             'song_title' => ['nullable', 'string', 'max:120'],
         ]);
+
+        if ($request->hasFile('media_file')) {
+            $path = $request->file('media_file')->store('posts', 'public');
+
+            $data['media_type'] = 'video';
+            $data['media_url'] = '/storage/'.$path;
+        }
+
+        unset($data['media_file']);
 
         $request->user()->posts()->create($data);
 

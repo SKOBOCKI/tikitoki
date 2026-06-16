@@ -110,6 +110,57 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
+    document.querySelectorAll(".create-panel").forEach((form) => {
+        const uploadInput = form.querySelector("[data-upload-input]");
+        const uploadName = form.querySelector("[data-upload-name]");
+        const preview = document.querySelector("[data-upload-preview]");
+        const emptyPreview = document.querySelector("[data-upload-empty]");
+        const mediaType = form.querySelector('select[name="media_type"]');
+        let previewUrl = null;
+
+        uploadInput?.addEventListener("change", () => {
+            const file = uploadInput.files?.[0];
+
+            if (previewUrl) {
+                URL.revokeObjectURL(previewUrl);
+                previewUrl = null;
+            }
+
+            if (!file) {
+                if (preview) {
+                    preview.hidden = true;
+                    preview.removeAttribute("src");
+                }
+                if (emptyPreview) {
+                    emptyPreview.hidden = false;
+                }
+                if (uploadName) {
+                    uploadName.textContent = "MP4, MOV, WebM or OGG up to 100 MB.";
+                }
+                return;
+            }
+
+            if (mediaType) {
+                mediaType.value = "video";
+            }
+
+            if (uploadName) {
+                uploadName.textContent = file.name;
+            }
+
+            if (preview) {
+                previewUrl = URL.createObjectURL(file);
+                preview.src = previewUrl;
+                preview.hidden = false;
+                preview.load();
+            }
+
+            if (emptyPreview) {
+                emptyPreview.hidden = true;
+            }
+        });
+    });
+
     document.querySelectorAll(".feed-card").forEach((card) => {
         const video = card.querySelector("video.feed-media");
         const progress = card.querySelector("[data-progress]");

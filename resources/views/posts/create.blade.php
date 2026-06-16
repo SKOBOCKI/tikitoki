@@ -11,13 +11,14 @@
 
         <main class="create-layout">
             <section class="create-preview" aria-label="Upload preview">
-                <div>
+                <video data-upload-preview controls playsinline hidden></video>
+                <div data-upload-empty>
                     <span class="app-icon icon-plus" aria-hidden="true"></span>
                     <strong>9:16</strong>
                 </div>
             </section>
 
-            <form method="POST" action="{{ route('posts.store') }}" class="create-panel">
+            <form method="POST" action="{{ route('posts.store') }}" class="create-panel" enctype="multipart/form-data">
                 @csrf
 
                 <div class="panel-heading">
@@ -34,9 +35,15 @@
                     <textarea name="caption" placeholder="Write a short caption" required maxlength="500" rows="5">{{ old('caption') }}</textarea>
                 </label>
 
+                <label class="file-upload-field">
+                    <span>Video from your PC</span>
+                    <input data-upload-input type="file" name="media_file" accept="video/mp4,video/quicktime,video/webm,video/ogg,video/*">
+                    <small data-upload-name>MP4, MOV, WebM or OGG up to 100 MB.</small>
+                </label>
+
                 <label>
                     Media URL
-                    <input type="url" name="media_url" value="{{ old('media_url') }}" placeholder="https://... video or image URL" required>
+                    <input type="url" name="media_url" value="{{ old('media_url') }}" placeholder="Or paste a video/photo URL">
                 </label>
 
                 <div class="form-grid">

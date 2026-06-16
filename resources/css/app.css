@@ -1177,6 +1177,13 @@ summary {
     color: var(--tt-text-dim);
 }
 
+.create-preview video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    background: #000;
+}
+
 .create-preview span {
     width: 4rem;
     height: 4rem;
@@ -1207,6 +1214,48 @@ summary {
     border: 1px solid var(--tt-line);
     border-radius: var(--radius);
     background: var(--tt-bg-raised);
+}
+
+.file-upload-field {
+    gap: 0.55rem;
+    padding: 0.85rem;
+    border: 1px dashed var(--tt-line-strong);
+    border-radius: var(--radius);
+    background: rgb(255 255 255 / 0.045);
+}
+
+.file-upload-field > span {
+    color: var(--tt-text);
+    font-size: 0.9rem;
+    font-weight: 850;
+}
+
+.file-upload-field input[type="file"] {
+    width: 100%;
+    color: var(--tt-text-dim);
+    font-size: 0.82rem;
+}
+
+.file-upload-field input[type="file"]::file-selector-button {
+    min-height: 2.35rem;
+    margin-right: 0.75rem;
+    border: 0;
+    border-radius: var(--radius);
+    background: var(--tt-text);
+    color: var(--tt-bg);
+    padding: 0 0.8rem;
+    font-size: 0.8rem;
+    font-weight: 850;
+    cursor: pointer;
+}
+
+.file-upload-field small {
+    overflow: hidden;
+    color: var(--tt-text-dim);
+    font-size: 0.74rem;
+    font-weight: 700;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .search-layout {
