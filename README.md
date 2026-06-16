@@ -108,7 +108,14 @@ Install Node dependencies:
 npm install
 ```
 
-Create or update `.env`:
+Create or update `.env` from the repository template:
+
+```bash
+cp .env.example .env
+php artisan key:generate
+```
+
+Then fill in the database values in `.env`:
 
 ```env
 DB_CONNECTION=mysql
@@ -118,6 +125,8 @@ DB_DATABASE=tikitoki
 DB_USERNAME=root
 DB_PASSWORD=your_password
 ```
+
+> `.env` is ignored by Git, so your local credentials stay private.
 
 Create the MySQL database:
 
