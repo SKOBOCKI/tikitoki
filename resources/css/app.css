@@ -237,8 +237,14 @@ summary {
 }
 
 .status-toast {
+    position: fixed;
+    top: calc(var(--topbar-height) + env(safe-area-inset-top) + 0.75rem);
+    left: 50%;
+    z-index: 95;
     width: min(28rem, calc(100vw - 2rem));
-    margin: 1rem auto 0;
+    margin: 0;
+    box-shadow: 0 1.1rem 3rem rgb(0 0 0 / 0.36);
+    transform: translateX(-50%);
 }
 
 .form-error,
@@ -1101,7 +1107,9 @@ iframe.feed-media {
 }
 
 .feed-stack + .bottom-nav {
-    width: var(--feed-player-width);
+    width: 100vw;
+    grid-template-columns: repeat(5, minmax(3.2rem, 5.8rem));
+    justify-content: center;
 }
 
 .empty-feed h1 {
