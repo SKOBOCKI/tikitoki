@@ -307,18 +307,6 @@ summary {
     --icon-mask: url("/img/plus-large-svgrepo-com.svg");
 }
 
-.icon-heart {
-    --icon-mask: url("/img/heart-svgrepo-com.svg");
-}
-
-.icon-comment {
-    --icon-mask: url("/img/comment-1-svgrepo-com.svg");
-}
-
-.icon-share {
-    --icon-mask: url("/img/share-svgrepo-com.svg");
-}
-
 .icon-mail {
     --icon-mask: url("/img/mail-open-alt-svgrepo-com.svg");
 }
