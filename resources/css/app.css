@@ -313,6 +313,8 @@ summary {
 .app-shell {
     --feed-player-height: 100dvh;
     --feed-player-width: min(100vw, 56.25dvh);
+    --feed-comments-width: min(24rem, calc(100vw - var(--feed-player-width) - 1.5rem));
+    --feed-comments-gap: 0.75rem;
     min-height: 100dvh;
     background: var(--tt-bg);
     overflow: hidden;
@@ -947,7 +949,7 @@ iframe.feed-media {
     right: 0;
     bottom: var(--nav-height);
     z-index: 20;
-    height: min(68dvh, 38rem);
+    height: min(58dvh, 34rem);
     display: flex;
     flex-direction: column;
     border-top: 1px solid var(--tt-line);
@@ -2881,6 +2883,7 @@ iframe.feed-media {
     .app-shell {
         --feed-player-height: calc(100dvh - 1rem);
         --feed-player-width: min(calc(100vw - 2rem), calc(56.25dvh - 0.5625rem));
+        --feed-comments-width: min(24rem, calc(100vw - var(--feed-player-width) - 2.75rem));
     }
 
     .feed-stack {
@@ -2891,6 +2894,57 @@ iframe.feed-media {
     .feed-card {
         border-radius: var(--radius);
         scroll-snap-align: center;
+    }
+
+    .feed-card,
+    .media-stage,
+    .action-rail,
+    .post-info {
+        transition:
+            width 240ms cubic-bezier(0.2, 0.8, 0.2, 1),
+            transform 240ms cubic-bezier(0.2, 0.8, 0.2, 1),
+            left 240ms cubic-bezier(0.2, 0.8, 0.2, 1),
+            right 240ms cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+}
+
+@media (min-width: 900px) and (min-aspect-ratio: 1 / 1) {
+    .feed-card.has-open-comments {
+        width: min(
+            calc(100vw - 2rem),
+            calc(var(--feed-player-width) + var(--feed-comments-gap) + var(--feed-comments-width))
+        );
+        background: transparent;
+    }
+
+    .feed-card.has-open-comments .media-stage {
+        inset: 0 auto 0 0;
+        width: var(--feed-player-width);
+    }
+
+    .feed-card.has-open-comments .comments-panel {
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: auto;
+        width: var(--feed-comments-width);
+        height: auto;
+        border-top: 0;
+        border-left: 1px solid var(--tt-line);
+        border-radius: var(--radius);
+        transform: translateX(calc(100% + var(--feed-comments-gap)));
+    }
+
+    .feed-card.has-open-comments .comments-panel.is-open {
+        transform: translateX(0);
+    }
+
+    .feed-card.has-open-comments .action-rail {
+        right: calc(var(--feed-comments-width) + var(--feed-comments-gap) + 0.75rem);
+    }
+
+    .feed-card.has-open-comments .post-info {
+        right: calc(var(--feed-comments-width) + var(--feed-comments-gap) + 5.4rem);
     }
 }
 
@@ -3171,7 +3225,7 @@ iframe.feed-media {
     }
 
     .comments-panel {
-        height: min(66dvh, 34rem);
+        height: min(56dvh, 30rem);
     }
 
     .comment-form {
