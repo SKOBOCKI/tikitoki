@@ -98,27 +98,30 @@
                             <form method="POST" action="{{ route('posts.like', $post) }}">
                                 @csrf
                                 <button @class(['round-action', 'liked' => $post->likedBy(auth()->user())]) type="submit" title="Like" aria-label="Like">
-                                    <span aria-hidden="true">&#9829;</span>
+                                    <span class="app-icon icon-heart" aria-hidden="true"></span>
                                 </button>
                             </form>
                             <span class="metric">{{ $post->likes_count }}</span>
 
                             <button class="round-action comment-toggle" type="button" data-comments-target="comments-{{ $post->id }}" title="Comments" aria-label="Open comments" aria-expanded="false">
-                                <span aria-hidden="true">&#9684;</span>
+                                <span class="app-icon icon-comment" aria-hidden="true"></span>
                             </button>
                             <span class="metric">{{ $post->comments_count }}</span>
 
                             <button class="round-action" type="button" data-share-url="{{ $postUrl }}" data-share-title="{{ '@'.$post->user->username.' on TikiToki' }}" title="Share" aria-label="Share">
-                                <span aria-hidden="true">&#8599;</span>
+                                <span class="app-icon icon-share" aria-hidden="true"></span>
                                 <span class="sr-only" data-action-label>Share</span>
                             </button>
                         @else
                             <a class="round-action" href="{{ route('login') }}" title="Log in to subscribe" aria-label="Log in to subscribe"><span class="app-icon icon-plus" aria-hidden="true"></span></a>
-                            <a class="round-action" href="{{ route('login') }}" title="Log in to like" aria-label="Log in to like"><span aria-hidden="true">&#9829;</span></a>
+                            <a class="round-action" href="{{ route('login') }}" title="Log in to like" aria-label="Log in to like"><span class="app-icon icon-heart" aria-hidden="true"></span></a>
                             <span class="metric">{{ $post->likes_count }}</span>
-                            <button class="round-action comment-toggle" type="button" data-comments-target="comments-{{ $post->id }}" title="Comments" aria-label="Open comments" aria-expanded="false"><span aria-hidden="true">&#9684;</span></button>
+                            <button class="round-action comment-toggle" type="button" data-comments-target="comments-{{ $post->id }}" title="Comments" aria-label="Open comments" aria-expanded="false"><span class="app-icon icon-comment" aria-hidden="true"></span></button>
                             <span class="metric">{{ $post->comments_count }}</span>
-                            <button class="round-action" type="button" data-share-url="{{ $postUrl }}" data-share-title="{{ '@'.$post->user->username.' on TikiToki' }}" title="Share" aria-label="Share"><span aria-hidden="true">&#8599;</span></button>
+                            <button class="round-action" type="button" data-share-url="{{ $postUrl }}" data-share-title="{{ '@'.$post->user->username.' on TikiToki' }}" title="Share" aria-label="Share">
+                                <span class="app-icon icon-share" aria-hidden="true"></span>
+                                <span class="sr-only" data-action-label>Share</span>
+                            </button>
                         @endauth
                     </aside>
 
