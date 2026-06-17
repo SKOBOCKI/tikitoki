@@ -31,8 +31,9 @@ class Post extends Model
     {
         $mediaUrl = (string) $this->media_url;
         $path = parse_url($mediaUrl, PHP_URL_PATH);
+        $host = parse_url($mediaUrl, PHP_URL_HOST);
 
-        if (is_string($path)) {
+        if ($host === null && is_string($path)) {
             if (Str::startsWith($path, '/storage/')) {
                 return '/media/'.ltrim(Str::after($path, '/storage/'), '/');
             }
@@ -51,6 +52,67 @@ class Post extends Model
         }
 
         return $mediaUrl;
+    }
+
+    public function getMediaEmbedUrlAttribute(): ?string
+    {
+        $mediaUrl = (string) $this->media_url;
+        $host = parse_url($mediaUrl, PHP_URL_HOST);
+
+        if (! is_string($host)) {
+            return null;
+        }
+
+        $host = Str::lower(Str::replaceStart('www.', '', $host));
+        $path = trim((string) parse_url($mediaUrl, PHP_URL_PATH), '/');
+        parse_str((string) parse_url($mediaUrl, PHP_URL_QUERY), $query);
+
+        if (in_array($host, ['youtube.com', 'm.youtube.com'], true)) {
+            $videoId = $query['v'] ?? null;
+
+            if (! $videoId && Str::startsWith($path, 'shorts/')) {
+                $videoId = Str::after($path, 'shorts/');
+            }
+
+            if (! $videoId && Str::startsWith($path, 'embed/')) {
+                $videoId = Str::after($path, 'embed/');
+            }
+
+            if (is_string($videoId) && $videoId !== '') {
+                return 'https://www.youtube-nocookie.com/embed/'.urlencode(Str::before($videoId, '/')).'?rel=0&playsinline=1';
+            }
+        }
+
+        if ($host === 'youtu.be' && $path !== '') {
+            return 'https://www.youtube-nocookie.com/embed/'.urlencode(Str::before($path, '/')).'?rel=0&playsinline=1';
+        }
+
+        if ($host === 'vimeo.com' && preg_match('/^\d+$/', $path) === 1) {
+            return 'https://player.vimeo.com/video/'.$path;
+        }
+
+        return null;
+    }
+
+    public function getDetectedMediaTypeAttribute(): ?string
+    {
+        if ($this->media_embed_url) {
+            return 'video';
+        }
+
+        $path = parse_url((string) $this->media_url, PHP_URL_PATH) ?: (string) $this->media_url;
+        $extension = strtolower(pathinfo($path, PATHINFO_EXTENSION));
+
+        return match ($extension) {
+            'mp4', 'm4v', 'mov', 'qt', 'webm', 'ogg', 'ogv' => 'video',
+            'jpg', 'jpeg', 'png', 'gif', 'webp', 'avif', 'svg' => 'photo',
+            default => null,
+        };
+    }
+
+    public function getDisplayMediaTypeAttribute(): string
+    {
+        return $this->detected_media_type ?? $this->media_type;
     }
 
     public function getMediaMimeTypeAttribute(): ?string

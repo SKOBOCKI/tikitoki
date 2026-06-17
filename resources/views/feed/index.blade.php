@@ -42,29 +42,34 @@
                     $isOwner = auth()->check() && auth()->user()->is($post->user);
                     $postUrl = route('posts.show', $post);
                     $avatar = $post->user->avatar_url ?? 'https://api.dicebear.com/8.x/initials/svg?seed='.urlencode($post->user->name);
+                    $mediaType = $post->display_media_type;
                 @endphp
 
                 <article class="feed-card" id="post-{{ $post->id }}">
                     <div class="media-stage">
                         <div class="media-frame">
-                            @if ($post->media_type === 'video')
-                                <video class="feed-media" controls autoplay loop muted playsinline preload="metadata" controlsList="nodownload nofullscreen noplaybackrate" disablepictureinpicture>
-                                    <source src="{{ $post->media_source }}" @if ($post->media_mime_type) type="{{ $post->media_mime_type }}" @endif>
-                                </video>
-                                <button class="media-toggle" type="button" aria-label="Play or pause video">
-                                    <span aria-hidden="true">&#9654;</span>
-                                </button>
-                                <div class="shorts-volume">
-                                    <button type="button" data-volume-button aria-label="Control volume">
-                                        <span aria-hidden="true">&#9835;</span>
+                            @if ($mediaType === 'video')
+                                @if ($post->media_embed_url)
+                                    <iframe class="feed-media" src="{{ $post->media_embed_url }}" title="{{ '@'.$post->user->username.' video' }}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                                @else
+                                    <video class="feed-media" controls autoplay loop muted playsinline preload="metadata" controlsList="nodownload nofullscreen noplaybackrate" disablepictureinpicture>
+                                        <source src="{{ $post->media_source }}" @if ($post->media_mime_type) type="{{ $post->media_mime_type }}" @endif>
+                                    </video>
+                                    <button class="media-toggle" type="button" aria-label="Play or pause video">
+                                        <span aria-hidden="true">&#9654;</span>
                                     </button>
-                                    <input type="range" data-volume-slider min="0" max="1" step="0.05" value="0" aria-label="Volume">
-                                </div>
-                                <div class="shorts-timeline" data-timeline aria-label="Video timeline">
-                                    <div class="shorts-progress" data-progress></div>
-                                    <input class="shorts-seek" type="range" data-seek min="0" max="0" step="0.01" value="0" aria-label="Seek video">
-                                </div>
-                                <p class="media-error" data-media-error hidden>Video cannot be played by this browser.</p>
+                                    <div class="shorts-volume">
+                                        <button type="button" data-volume-button aria-label="Control volume">
+                                            <span aria-hidden="true">&#9835;</span>
+                                        </button>
+                                        <input type="range" data-volume-slider min="0" max="1" step="0.05" value="0" aria-label="Volume">
+                                    </div>
+                                    <div class="shorts-timeline" data-timeline aria-label="Video timeline">
+                                        <div class="shorts-progress" data-progress></div>
+                                        <input class="shorts-seek" type="range" data-seek min="0" max="0" step="0.01" value="0" aria-label="Seek video">
+                                    </div>
+                                    <p class="media-error" data-media-error hidden>Video cannot be played by this browser.</p>
+                                @endif
                             @else
                                 <img class="feed-media" src="{{ $post->media_source }}" alt="{{ $post->caption }}">
                             @endif

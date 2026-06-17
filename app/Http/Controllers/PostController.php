@@ -5,10 +5,14 @@ namespace App\Http\Controllers;
 use App\Models\Post;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\Process\ExecutableFinder;
+use Symfony\Component\Process\Process;
 
 class PostController extends Controller
 {
@@ -46,10 +50,12 @@ class PostController extends Controller
         ]);
 
         if ($request->hasFile('media_file')) {
-            $path = $request->file('media_file')->store('posts', 'public');
+            $path = $this->storePlayableVideo($request->file('media_file'));
 
             $data['media_type'] = 'video';
             $data['media_url'] = '/media/'.$path;
+        } elseif (! empty($data['media_url'])) {
+            $data['media_type'] = $this->guessMediaType($data['media_url']) ?? $data['media_type'];
         }
 
         unset($data['media_file']);
@@ -81,6 +87,82 @@ class PostController extends Controller
             'Cache-Control' => 'public, max-age=31536000',
             'Content-Type' => $contentType,
         ]);
+    }
+
+    private function storePlayableVideo(UploadedFile $file): string
+    {
+        $ffmpeg = (new ExecutableFinder())->find('ffmpeg');
+
+        if (! $ffmpeg) {
+            return $file->store('posts', 'public');
+        }
+
+        $disk = Storage::disk('public');
+        $path = 'posts/'.Str::uuid().'.mp4';
+        $targetPath = $disk->path($path);
+
+        if (! is_dir(dirname($targetPath))) {
+            mkdir(dirname($targetPath), 0755, true);
+        }
+
+        $process = new Process([
+            $ffmpeg,
+            '-y',
+            '-i',
+            $file->getRealPath(),
+            '-map',
+            '0:v:0',
+            '-map',
+            '0:a?',
+            '-vf',
+            'scale=trunc(iw/2)*2:trunc(ih/2)*2',
+            '-c:v',
+            'libx264',
+            '-preset',
+            'veryfast',
+            '-crf',
+            '23',
+            '-pix_fmt',
+            'yuv420p',
+            '-c:a',
+            'aac',
+            '-b:a',
+            '128k',
+            '-movflags',
+            '+faststart',
+            $targetPath,
+        ]);
+        $process->setTimeout(120);
+        $process->run();
+
+        if ($process->isSuccessful() && is_file($targetPath) && filesize($targetPath) > 0) {
+            return $path;
+        }
+
+        if (is_file($targetPath)) {
+            unlink($targetPath);
+        }
+
+        return $file->store('posts', 'public');
+    }
+
+    private function guessMediaType(string $url): ?string
+    {
+        $host = strtolower((string) parse_url($url, PHP_URL_HOST));
+        $host = str_starts_with($host, 'www.') ? substr($host, 4) : $host;
+
+        if (in_array($host, ['youtube.com', 'm.youtube.com', 'youtu.be', 'vimeo.com'], true)) {
+            return 'video';
+        }
+
+        $path = parse_url($url, PHP_URL_PATH) ?: $url;
+        $extension = strtolower(pathinfo($path, PATHINFO_EXTENSION));
+
+        return match ($extension) {
+            'mp4', 'm4v', 'mov', 'qt', 'webm', 'ogg', 'ogv' => 'video',
+            'jpg', 'jpeg', 'png', 'gif', 'webp', 'avif', 'svg' => 'photo',
+            default => null,
+        };
     }
 
     public function like(Request $request, Post $post): RedirectResponse

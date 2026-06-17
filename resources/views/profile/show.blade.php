@@ -59,16 +59,24 @@
 
                 <div class="creator-video-grid">
                     @forelse ($likedPosts as $post)
+                        @php
+                            $mediaType = $post->display_media_type;
+                        @endphp
+
                         <a class="creator-video-card" href="{{ route('posts.show', $post) }}">
                             <div class="creator-video-media">
-                                @if ($post->media_type === 'video')
-                                    <video muted playsinline preload="metadata">
-                                        <source src="{{ $post->media_source }}" @if ($post->media_mime_type) type="{{ $post->media_mime_type }}" @endif>
-                                    </video>
+                                @if ($mediaType === 'video')
+                                    @if ($post->media_embed_url)
+                                        <iframe src="{{ $post->media_embed_url }}" title="{{ '@'.$post->user->username.' video' }}" loading="lazy" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                                    @else
+                                        <video muted playsinline preload="metadata">
+                                            <source src="{{ $post->media_source }}" @if ($post->media_mime_type) type="{{ $post->media_mime_type }}" @endif>
+                                        </video>
+                                    @endif
                                 @else
                                     <img src="{{ $post->media_source }}" alt="{{ $post->caption }}">
                                 @endif
-                                <span>{{ ucfirst($post->media_type) }}</span>
+                                <span>{{ ucfirst($mediaType) }}</span>
                             </div>
 
                             <div class="creator-video-body">

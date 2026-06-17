@@ -1,6 +1,7 @@
 <x-layouts.app title="Clip | TikiToki">
     @php
         $postUrl = route('posts.show', $post);
+        $mediaType = $post->display_media_type;
     @endphp
 
     <section class="watch-page">
@@ -22,10 +23,14 @@
 
         <article class="watch-layout">
             <div class="watch-media">
-                @if ($post->media_type === 'video')
-                    <video controls autoplay playsinline>
-                        <source src="{{ $post->media_source }}" @if ($post->media_mime_type) type="{{ $post->media_mime_type }}" @endif>
-                    </video>
+                @if ($mediaType === 'video')
+                    @if ($post->media_embed_url)
+                        <iframe src="{{ $post->media_embed_url }}" title="{{ '@'.$post->user->username.' video' }}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                    @else
+                        <video controls autoplay playsinline>
+                            <source src="{{ $post->media_source }}" @if ($post->media_mime_type) type="{{ $post->media_mime_type }}" @endif>
+                        </video>
+                    @endif
                 @else
                     <img src="{{ $post->media_source }}" alt="{{ $post->caption }}">
                 @endif
