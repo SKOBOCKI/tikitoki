@@ -311,6 +311,8 @@ summary {
 
 /* Navigation */
 .app-shell {
+    --feed-card-gap: 0rem;
+    --feed-edge-gap: 0rem;
     --feed-player-height: 100dvh;
     --feed-player-width: min(100vw, 56.25dvh);
     --feed-comments-width: min(24rem, calc(100vw - var(--feed-player-width) - 1.5rem));
@@ -611,11 +613,13 @@ summary {
     height: 100dvh;
     overflow-y: auto;
     scroll-snap-type: y mandatory;
+    scroll-padding-block: var(--feed-edge-gap);
     overscroll-behavior-y: contain;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0;
+    gap: var(--feed-card-gap);
+    padding-block: var(--feed-edge-gap);
     background: var(--tt-bg);
     scrollbar-width: none;
 }
@@ -2881,19 +2885,16 @@ iframe.feed-media {
 
 @media (min-width: 760px) {
     .app-shell {
-        --feed-player-height: calc(100dvh - 1rem);
-        --feed-player-width: min(calc(100vw - 2rem), calc(56.25dvh - 0.5625rem));
+        --feed-card-gap: 0.75rem;
+        --feed-edge-gap: 0.375rem;
+        --feed-player-height: calc(100dvh - 0.75rem);
+        --feed-player-width: min(calc(100vw - 2rem), calc(56.25dvh - 0.421875rem));
         --feed-comments-width: min(24rem, calc(100vw - var(--feed-player-width) - 2.75rem));
-    }
-
-    .feed-stack {
-        padding-top: 0.5rem;
-        padding-bottom: 0.5rem;
     }
 
     .feed-card {
         border-radius: var(--radius);
-        scroll-snap-align: center;
+        scroll-snap-align: start;
     }
 
     .feed-card,
@@ -2925,7 +2926,7 @@ iframe.feed-media {
     .feed-card.has-open-comments .comments-panel {
         top: 0;
         right: 0;
-        bottom: 0;
+        bottom: var(--nav-height);
         left: auto;
         width: var(--feed-comments-width);
         height: auto;
@@ -2945,6 +2946,52 @@ iframe.feed-media {
 
     .feed-card.has-open-comments .post-info {
         right: calc(var(--feed-comments-width) + var(--feed-comments-gap) + 5.4rem);
+    }
+}
+
+@media (min-width: 900px) and (max-height: 900px) {
+    .app-shell {
+        --feed-card-gap: 0.9rem;
+        --feed-edge-gap: 0.45rem;
+        --feed-player-height: calc(100dvh - var(--topbar-height) - var(--nav-height) - 0.9rem);
+        --feed-player-width: min(calc(100vw - 2rem), calc(56.25dvh - 5.2875rem));
+        --feed-comments-width: min(24rem, calc(100vw - var(--feed-player-width) - 2.75rem));
+    }
+
+    .feed-stack {
+        padding-top: calc(var(--topbar-height) + var(--feed-edge-gap));
+        padding-bottom: calc(var(--nav-height) + var(--feed-edge-gap));
+        scroll-padding-top: calc(var(--topbar-height) + var(--feed-edge-gap));
+        scroll-padding-bottom: calc(var(--nav-height) + var(--feed-edge-gap));
+    }
+
+    .shorts-volume {
+        top: 0.85rem;
+    }
+
+    .shorts-timeline {
+        bottom: 0;
+    }
+
+    .media-error {
+        bottom: 1rem;
+    }
+
+    .action-rail {
+        bottom: 4.8rem;
+    }
+
+    .post-info {
+        bottom: 1rem;
+    }
+
+    .comments-panel {
+        bottom: 0;
+        max-height: 100%;
+    }
+
+    .feed-card.has-open-comments .comments-panel {
+        bottom: 0;
     }
 }
 
