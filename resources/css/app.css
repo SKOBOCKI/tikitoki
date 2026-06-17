@@ -311,6 +311,8 @@ summary {
 
 /* Navigation */
 .app-shell {
+    --feed-player-height: 100dvh;
+    --feed-player-width: min(100vw, 56.25dvh);
     min-height: 100dvh;
     background: var(--tt-bg);
     overflow: hidden;
@@ -622,9 +624,10 @@ summary {
 
 .feed-card {
     position: relative;
-    width: min(100vw, 34rem);
-    height: 100dvh;
-    flex: 0 0 100dvh;
+    width: var(--feed-player-width);
+    height: var(--feed-player-height);
+    aspect-ratio: 9 / 16;
+    flex: 0 0 var(--feed-player-height);
     overflow: hidden;
     background: #000;
     scroll-snap-align: start;
@@ -1075,8 +1078,8 @@ iframe.feed-media {
 }
 
 .empty-feed {
-    width: min(34rem, 100vw);
-    min-height: 100dvh;
+    width: var(--feed-player-width);
+    min-height: var(--feed-player-height);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -1085,6 +1088,10 @@ iframe.feed-media {
     padding: 6rem 1.2rem;
     text-align: center;
     scroll-snap-align: start;
+}
+
+.feed-stack + .bottom-nav {
+    width: var(--feed-player-width);
 }
 
 .empty-feed h1 {
@@ -2266,40 +2273,31 @@ iframe.feed-media {
 /* Watch */
 .watch-page {
     min-height: 100dvh;
-    overflow-x: hidden;
-    padding-bottom: calc(var(--nav-height) + env(safe-area-inset-bottom));
+    padding-bottom: var(--nav-height);
     background: var(--tt-bg);
 }
 
 .watch-layout {
-    width: min(64rem, 100%);
-    min-height: calc(100dvh - var(--nav-height) - var(--topbar-height));
+    width: min(70rem, 100%);
     margin: 0 auto;
     display: grid;
-    grid-template-columns: minmax(0, 29rem) minmax(18rem, 22rem);
-    align-items: center;
+    grid-template-columns: minmax(16rem, 32rem) minmax(18rem, 22rem);
+    align-items: start;
     justify-content: center;
-    gap: clamp(1rem, 3vw, 1.6rem);
-    padding: clamp(0.8rem, 2vh, 1.35rem) 1rem;
+    gap: 1.25rem;
+    padding: 1rem;
 }
 
 .watch-media {
-    width: min(92vw, 27rem, 42dvh);
-    max-height: calc(100dvh - var(--nav-height) - var(--topbar-height) - 2rem);
-    aspect-ratio: 9 / 16;
+    width: min(100%, 32rem);
+    height: min(76dvh, 46rem);
     justify-self: end;
     display: flex;
     align-items: center;
     justify-content: center;
     overflow: hidden;
-    border: 1px solid rgb(255 255 255 / 0.12);
-    border-radius: 1.15rem;
-    background:
-        linear-gradient(180deg, rgb(255 255 255 / 0.08), transparent 16%),
-        #000;
-    box-shadow:
-        0 1.5rem 4rem rgb(0 0 0 / 0.36),
-        inset 0 0 0 1px rgb(255 255 255 / 0.05);
+    border-radius: var(--radius);
+    background: #000;
 }
 
 .watch-media video,
@@ -2311,19 +2309,14 @@ iframe.feed-media {
     object-fit: contain;
     background: #000;
     border: 0;
-    border-radius: inherit;
 }
 
 .watch-details {
-    align-self: center;
-    min-width: 0;
-    max-height: calc(100dvh - var(--nav-height) - var(--topbar-height) - 2rem);
-    overflow-y: auto;
+    align-self: start;
     display: flex;
     flex-direction: column;
     gap: 1rem;
-    padding: 0.5rem 0.25rem 0.5rem 0;
-    scrollbar-width: thin;
+    padding: 0.5rem 0;
 }
 
 .watch-creator {
@@ -2885,14 +2878,17 @@ iframe.feed-media {
 }
 
 @media (min-width: 760px) {
+    .app-shell {
+        --feed-player-height: calc(100dvh - 1rem);
+        --feed-player-width: min(calc(100vw - 2rem), calc(56.25dvh - 0.5625rem));
+    }
+
     .feed-stack {
         padding-top: 0.5rem;
         padding-bottom: 0.5rem;
     }
 
     .feed-card {
-        height: calc(100dvh - 1rem);
-        flex-basis: calc(100dvh - 1rem);
         border-radius: var(--radius);
         scroll-snap-align: center;
     }
@@ -2914,23 +2910,8 @@ iframe.feed-media {
         grid-template-columns: 1fr;
     }
 
-    .watch-layout {
-        min-height: auto;
-        align-items: start;
-        padding-bottom: 1rem;
-    }
-
     .watch-media {
-        width: min(92vw, 24rem, 43dvh);
         justify-self: center;
-    }
-
-    .watch-details {
-        width: min(92vw, 32rem);
-        max-height: none;
-        justify-self: center;
-        overflow: visible;
-        padding: 0;
     }
 
     .chat-page.selected-chat .chat-sidebar {
@@ -3242,12 +3223,13 @@ iframe.feed-media {
     }
 
     .watch-layout {
-        padding-inline: 0.75rem;
+        padding-inline: 0;
     }
 
     .watch-media {
-        width: min(92vw, 22rem, 43dvh);
-        border-radius: 1rem;
+        width: min(100%, 32rem);
+        height: min(72dvh, 42rem);
+        border-radius: 0;
     }
 
     .chat-sidebar {
