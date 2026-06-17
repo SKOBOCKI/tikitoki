@@ -48,7 +48,9 @@
                     <div class="media-stage">
                         <div class="media-frame">
                             @if ($post->media_type === 'video')
-                                <video class="feed-media" src="{{ $post->media_source }}" controls autoplay loop muted playsinline preload="metadata" controlsList="nodownload nofullscreen noplaybackrate" disablepictureinpicture></video>
+                                <video class="feed-media" controls autoplay loop muted playsinline preload="metadata" controlsList="nodownload nofullscreen noplaybackrate" disablepictureinpicture>
+                                    <source src="{{ $post->media_source }}" @if ($post->media_mime_type) type="{{ $post->media_mime_type }}" @endif>
+                                </video>
                                 <button class="media-toggle" type="button" aria-label="Play or pause video">
                                     <span aria-hidden="true">&#9654;</span>
                                 </button>

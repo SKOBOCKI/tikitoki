@@ -67,7 +67,9 @@
                         <a class="search-card" href="{{ route('posts.show', $post) }}">
                             <div class="search-card-media">
                                 @if ($post->media_type === 'video')
-                                    <video src="{{ $post->media_source }}" muted playsinline preload="metadata"></video>
+                                    <video muted playsinline preload="metadata">
+                                        <source src="{{ $post->media_source }}" @if ($post->media_mime_type) type="{{ $post->media_mime_type }}" @endif>
+                                    </video>
                                 @else
                                     <img src="{{ $post->media_source }}" alt="{{ $post->caption }}">
                                 @endif

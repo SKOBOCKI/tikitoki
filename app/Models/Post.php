@@ -29,17 +29,42 @@ class Post extends Model
 
     public function getMediaSourceAttribute(): string
     {
-        if (Str::startsWith($this->media_url, ['/storage/', '/media/'])) {
-            return $this->media_url;
+        $mediaUrl = (string) $this->media_url;
+        $path = parse_url($mediaUrl, PHP_URL_PATH);
+
+        if (is_string($path)) {
+            if (Str::startsWith($path, '/storage/')) {
+                return '/media/'.ltrim(Str::after($path, '/storage/'), '/');
+            }
+
+            if (Str::startsWith($path, '/media/')) {
+                return $path;
+            }
         }
 
-        $path = parse_url($this->media_url, PHP_URL_PATH);
-
-        if (is_string($path) && Str::startsWith($path, ['/storage/', '/media/'])) {
-            return $path;
+        if (Str::startsWith($mediaUrl, '/storage/')) {
+            return '/media/'.ltrim(Str::after($mediaUrl, '/storage/'), '/');
         }
 
-        return $this->media_url;
+        if (Str::startsWith($mediaUrl, '/media/')) {
+            return $mediaUrl;
+        }
+
+        return $mediaUrl;
+    }
+
+    public function getMediaMimeTypeAttribute(): ?string
+    {
+        $path = parse_url($this->media_source, PHP_URL_PATH) ?: $this->media_source;
+        $extension = strtolower(pathinfo($path, PATHINFO_EXTENSION));
+
+        return match ($extension) {
+            'mp4', 'm4v' => 'video/mp4',
+            'webm' => 'video/webm',
+            'ogg', 'ogv' => 'video/ogg',
+            'mov', 'qt' => 'video/quicktime',
+            default => null,
+        };
     }
 
     public function likedBy(?User $user): bool

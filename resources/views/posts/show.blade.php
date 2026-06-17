@@ -23,7 +23,9 @@
         <article class="watch-layout">
             <div class="watch-media">
                 @if ($post->media_type === 'video')
-                    <video src="{{ $post->media_source }}" controls autoplay playsinline></video>
+                    <video controls autoplay playsinline>
+                        <source src="{{ $post->media_source }}" @if ($post->media_mime_type) type="{{ $post->media_mime_type }}" @endif>
+                    </video>
                 @else
                     <img src="{{ $post->media_source }}" alt="{{ $post->caption }}">
                 @endif
