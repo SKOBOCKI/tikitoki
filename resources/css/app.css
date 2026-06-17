@@ -539,7 +539,7 @@ summary {
     padding: 0.35rem max(0.65rem, env(safe-area-inset-left))
         calc(0.45rem + env(safe-area-inset-bottom));
     border-top: 1px solid var(--tt-line);
-    background: rgb(10 10 10 / 0.94);
+    background: var(--tt-bg);
     backdrop-filter: blur(18px);
 }
 
@@ -645,6 +645,10 @@ summary {
 .media-frame {
     position: absolute;
     inset: 0;
+}
+
+.media-stage {
+    bottom: var(--nav-height);
 }
 
 .media-frame {
@@ -1181,7 +1185,8 @@ iframe.feed-media {
 .create-page,
 .search-page {
     min-height: 100dvh;
-    padding-bottom: var(--nav-height);
+    padding-bottom: calc(var(--nav-height) + 1rem);
+    scroll-padding-bottom: calc(var(--nav-height) + 1rem);
     background: var(--tt-bg);
 }
 
@@ -1194,12 +1199,18 @@ iframe.feed-media {
     justify-content: center;
     gap: clamp(1rem, 4vw, 3rem);
     padding: clamp(1rem, 4vw, 2.5rem);
+    padding-bottom: calc(var(--nav-height) + clamp(1rem, 4vw, 2.5rem));
 }
 
 .create-preview {
     position: sticky;
     top: calc(var(--topbar-height) + 1rem);
-    min-height: min(68dvh, 42rem);
+    height: min(
+        68dvh,
+        42rem,
+        calc(100dvh - var(--topbar-height) - var(--nav-height) - 2rem)
+    );
+    min-height: 0;
     aspect-ratio: 9 / 16;
     display: grid;
     place-items: center;
@@ -2919,7 +2930,7 @@ iframe.feed-media {
     }
 
     .feed-card.has-open-comments .media-stage {
-        inset: 0 auto 0 0;
+        inset: 0 auto var(--nav-height) 0;
         width: var(--feed-player-width);
     }
 
@@ -2963,6 +2974,14 @@ iframe.feed-media {
         padding-bottom: calc(var(--nav-height) + var(--feed-edge-gap));
         scroll-padding-top: calc(var(--topbar-height) + var(--feed-edge-gap));
         scroll-padding-bottom: calc(var(--nav-height) + var(--feed-edge-gap));
+    }
+
+    .media-stage {
+        inset: 0;
+    }
+
+    .feed-card.has-open-comments .media-stage {
+        inset: 0 auto 0 0;
     }
 
     .shorts-volume {
@@ -3027,7 +3046,12 @@ iframe.feed-media {
         position: relative;
         top: auto;
         width: min(100%, 18rem);
-        min-height: auto;
+        height: min(
+            32rem,
+            68dvh,
+            calc(100dvh - var(--topbar-height) - var(--nav-height) - 2rem)
+        );
+        min-height: 0;
         justify-self: center;
     }
 
@@ -3295,6 +3319,11 @@ iframe.feed-media {
 
     .create-preview {
         width: min(100%, 15rem);
+        height: min(
+            26.666rem,
+            68dvh,
+            calc(100dvh - var(--topbar-height) - var(--nav-height) - 2rem)
+        );
     }
 
     .search-layout {

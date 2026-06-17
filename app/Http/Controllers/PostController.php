@@ -6,6 +6,7 @@ use App\Models\Post;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -71,7 +72,14 @@ class PostController extends Controller
 
         $disk = Storage::disk('public');
 
-        abort_unless($disk->exists($path), 404);
+        if (! $disk->exists($path)) {
+            Log::warning('Uploaded media file is missing from the public disk.', [
+                'path' => $path,
+                'public_disk_root' => config('filesystems.disks.public.root'),
+            ]);
+
+            abort(404);
+        }
 
         $extension = strtolower(pathinfo($path, PATHINFO_EXTENSION));
         $contentType = match ($extension) {
